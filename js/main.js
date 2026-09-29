@@ -75,18 +75,39 @@ function initMobileMenu() {
   const menu = document.querySelector(".nav-menu");
   if (!toggle || !menu) return;
 
-  toggle.addEventListener("click", () => {
-    toggle.classList.toggle("active");
+  function closeMenu() {
+    toggle.classList.remove("active");
+    menu.classList.remove("active");
+    toggle.setAttribute("aria-expanded", "false");
+  }
+
+  toggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isActive = toggle.classList.toggle("active");
     menu.classList.toggle("active");
+    toggle.setAttribute("aria-expanded", isActive ? "true" : "false");
   });
 
-  // Close menu on nav link click
-  const navLinks = document.querySelectorAll(".nav-link");
-  navLinks.forEach(link => {
+  // Close menu on any link click inside the menu (including drawer action buttons)
+  const menuLinks = menu.querySelectorAll("a");
+  menuLinks.forEach(link => {
     link.addEventListener("click", () => {
-      toggle.classList.remove("active");
-      menu.classList.remove("active");
+      closeMenu();
     });
+  });
+
+  // Close menu if clicking outside the menu drawer and toggle
+  document.addEventListener("click", (e) => {
+    if (menu.classList.contains("active") && !menu.contains(e.target) && !toggle.contains(e.target)) {
+      closeMenu();
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && menu.classList.contains("active")) {
+      closeMenu();
+    }
   });
 }
 

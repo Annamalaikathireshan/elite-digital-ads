@@ -93,7 +93,7 @@
 
       <!-- Desktop Navigation Menu (Streamlined Labels, No Wrapping) -->
       <nav aria-label="Main Navigation">
-        <ul class="nav-menu">
+        <ul class="nav-menu" id="mainNavMenu">
           <li><a href="#spotlight" class="nav-link">Flagship</a></li>
           <li><a href="#services" class="nav-link">All Services</a></li>
           <li><a href="#estimator" class="nav-link">Estimator</a></li>
@@ -101,6 +101,18 @@
           <li><a href="#why-us" class="nav-link">Why Us</a></li>
           <li><a href="#testimonials" class="nav-link">Reviews</a></li>
           <li><a href="#contact" class="nav-link">Contact</a></li>
+          <!-- Mobile-Only Drawer Actions -->
+          <li class="mobile-nav-cta-item">
+            <a href="#contact" class="btn btn-primary mobile-drawer-btn">Get a Free Quote</a>
+          </li>
+          <li class="mobile-nav-cta-item">
+            <a href="tel:+917397355095" class="btn btn-secondary mobile-drawer-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+              <span>+91 739 735 5095</span>
+            </a>
+          </li>
         </ul>
       </nav>
 
@@ -135,10 +147,10 @@
         </a>
 
         <!-- Main CTA Button -->
-        <a href="#contact" class="btn btn-primary">Get a Quote</a>
+        <a href="#contact" class="btn btn-primary nav-header-cta">Get a Quote</a>
 
         <!-- Mobile Hamburger Toggle -->
-        <button class="mobile-toggle" aria-label="Toggle navigation menu">
+        <button class="mobile-toggle" aria-label="Toggle navigation menu" id="mobileToggleBtn" aria-expanded="false" aria-controls="mainNavMenu">
           <span></span>
           <span></span>
           <span></span>
@@ -512,8 +524,8 @@
               <div class="result-breakdown" id="estBreakdownDisplay">Frontlit Star Flex Printing • 30 Sq.Ft (10' × 3') • OUTDOOR</div>
               
               <a href="#" id="estWhatsappCta" target="_blank" rel="noopener" class="btn btn-primary result-cta">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.969.585 1.961.947 2.796.947 3.179 0 5.767-2.587 5.767-5.766.001-3.187-2.575-5.769-5.767-5.769zm10.218 5.768c-.002 5.66-4.604 10.262-10.264 10.262-1.802 0-3.504-.471-4.992-1.292l-5.617 1.474 1.5-5.467c-.908-1.574-1.39-3.376-1.39-5.215.002-5.66 4.606-10.262 10.266-10.262 5.658 0 10.261 4.602 10.263 10.263z"/>
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
                 </svg>
                 <span>Send Specification to WhatsApp</span>
               </a>
@@ -765,7 +777,7 @@
                 </div>
                 <div>
                   <div class="info-label">Social Media (@elitedigitalvdm)</div>
-                  <div class="info-val"><a href="https://www.instagram.com/elitedigitalvdm/" target="_blank" rel="noopener">WhatsApp • Instagram • Facebook • X • Threads ↗</a></div>
+                  <div class="info-val"><a href="https://www.instagram.com/elitedigitalvdm/" target="_blank" rel="noopener">Instagram ↗</a></div>
                 </div>
               </div>
 
@@ -835,8 +847,10 @@
               </div>
 
               <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                </svg>
                 <span>Submit & Connect on WhatsApp</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
               </button>
             </form>
 
@@ -959,8 +973,8 @@
   <div class="floating-actions">
     <!-- WhatsApp Quick Connect (Office Number) -->
     <a href="https://wa.me/917397355095?text=Hello%20Elite%20Digital,%20I%20would%20like%20to%20inquire%20about%20a%20signboard%20for%20my%20business." target="_blank" rel="noopener" class="fab-btn fab-whatsapp" aria-label="Chat with Elite Digital on WhatsApp">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.969.585 1.961.947 2.796.947 3.179 0 5.767-2.587 5.767-5.766.001-3.187-2.575-5.769-5.767-5.769zm10.218 5.768c-.002 5.66-4.604 10.262-10.264 10.262-1.802 0-3.504-.471-4.992-1.292l-5.617 1.474 1.5-5.467c-.908-1.574-1.39-3.376-1.39-5.215.002-5.66 4.606-10.262 10.266-10.262 5.658 0 10.261 4.602 10.263 10.263z"/>
+      <svg width="26" height="26" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
       </svg>
     </a>
 

@@ -16,8 +16,9 @@
   background: transparent;
 }
 
-.site-header.scrolled {
-  background: var(--bg-glass);
+.site-header.scrolled,
+.site-header.menu-open {
+  background: var(--bg-surface);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-subtle);
@@ -169,6 +170,7 @@
   display: none;
   width: 42px;
   height: 42px;
+  min-width: 42px;
   border-radius: var(--radius-sm);
   background: var(--bg-card);
   border: 1px solid var(--border-medium);
@@ -177,6 +179,17 @@
   flex-direction: column;
   gap: 5px;
   cursor: pointer;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.mobile-toggle:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-strong);
+}
+
+.mobile-nav-cta-item {
+  display: none;
 }
 
 .mobile-toggle span {
@@ -1238,6 +1251,13 @@ textarea.form-input {
 .fab-whatsapp {
   background: #25D366;
   color: #ffffff;
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.45);
+}
+
+.fab-whatsapp:hover {
+  background: #20ba59;
+  box-shadow: 0 12px 32px rgba(37, 211, 102, 0.65);
+  transform: scale(1.12);
 }
 
 .back-to-top {
@@ -1435,9 +1455,19 @@ textarea.form-input {
 }
 
 /* --------------------------------------------------------------------------
-   14. RESPONSIVE BREAKPOINTS
+   14. RESPONSIVE BREAKPOINTS (ALL SCREEN SIZES)
    -------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+  .phone-quick-link span {
+    display: none;
+  }
+  .phone-quick-link {
+    padding: 8px 10px;
+  }
+}
+
 @media (max-width: 1024px) {
+  /* Layout Grids */
   .hero-grid,
   .about-grid,
   .estimator-grid,
@@ -1453,45 +1483,60 @@ textarea.form-input {
 
   .services-grid,
   .portfolio-grid,
-  .why-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .metrics-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
+  .why-grid,
+  .metrics-grid,
   .footer-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-}
 
-@media (max-width: 1200px) {
-  .phone-quick-link span {
-    display: none;
-  }
-  .phone-quick-link {
-    padding: 8px 10px;
-  }
-}
-
-@media (max-width: 1024px) {
+  /* Navigation Drawer */
   .nav-menu {
     position: fixed;
-    top: 65px;
+    top: 66px;
     left: 0;
+    right: 0;
     width: 100%;
+    max-height: calc(100vh - 66px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     background: var(--bg-surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border-medium);
     flex-direction: column;
-    padding: 28px 24px;
-    gap: 18px;
+    padding: 24px 20px 32px 20px;
+    gap: 6px;
     display: none;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    z-index: 999;
   }
 
   .nav-menu.active {
     display: flex;
+    animation: slideDownMenu 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes slideDownMenu {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .nav-link {
+    display: block;
+    width: 100%;
+    padding: 12px 8px;
+    font-size: 1.05rem;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .nav-link::after {
+    display: none;
   }
 
   .phone-quick-link {
@@ -1501,10 +1546,34 @@ textarea.form-input {
   .mobile-toggle {
     display: flex;
   }
+
+  /* Hide desktop header quote button on mobile/tablets to guarantee hamburger menu fits */
+  .nav-header-cta,
+  .nav-actions .btn-primary {
+    display: none !important;
+  }
+
+  /* Show quote and call CTAs inside the mobile drawer */
+  .mobile-nav-cta-item {
+    display: block;
+    width: 100%;
+  }
+
+  .mobile-nav-cta-item:first-of-type {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-medium);
+  }
+
+  .mobile-drawer-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 20px;
+    font-size: 0.95rem;
+  }
 }
 
 @media (max-width: 768px) {
-
   .primary-showcases-grid,
   .services-grid,
   .portfolio-grid,
@@ -1518,10 +1587,231 @@ textarea.form-input {
     grid-template-columns: 1fr;
   }
 
+  /* Hero Section */
+  .hero-section {
+    padding-top: 110px;
+    padding-bottom: 50px;
+    min-height: auto;
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 6.5vw, 2.9rem);
+    margin-bottom: 18px;
+  }
+
+  .hero-description {
+    font-size: 1.02rem;
+    margin-bottom: 24px;
+  }
+
+  .hero-cta-group {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .hero-cta-group .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .floating-badge {
     position: static;
     margin-top: 14px;
     animation: none;
+  }
+
+  /* Primary Showcases */
+  .primary-showcase-body {
+    padding: 24px 20px;
+  }
+
+  .primary-showcase-title {
+    font-size: 1.45rem;
+  }
+
+  /* Estimator */
+  .estimator-wrapper {
+    padding: 28px 20px;
+    border-radius: var(--radius-lg);
+  }
+
+  .estimator-result-card {
+    padding: 24px 18px;
+  }
+
+  .result-price-range {
+    font-size: clamp(1.8rem, 6vw, 2.3rem);
+  }
+
+  /* Testimonials */
+  .testimonial-card {
+    padding: 32px 20px;
+  }
+
+  .testimonial-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+
+  /* Contact Cards */
+  .contact-info-card,
+  .contact-form-card {
+    padding: 28px 20px;
+    border-radius: var(--radius-lg);
+  }
+
+  /* Footer */
+  .site-footer {
+    padding-top: 50px;
+    padding-bottom: 30px;
+  }
+
+  .footer-grid {
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  /* Floating Action Buttons */
+  .floating-actions {
+    bottom: 20px;
+    right: 16px;
+    gap: 10px;
+  }
+
+  .fab-btn {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Header spacing */
+  .site-header {
+    padding: 12px 0;
+  }
+
+  .brand-logo {
+    gap: 8px;
+  }
+
+  .brand-symbol {
+    width: 34px;
+    height: 34px;
+    font-size: 0.95rem;
+  }
+
+  .brand-name {
+    font-size: 1.12rem;
+  }
+
+  .brand-sub {
+    font-size: 0.58rem;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-actions {
+    gap: 8px;
+  }
+
+  .btn-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .mobile-toggle {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+  }
+
+  /* Typography & Components */
+  .hero-tag {
+    font-size: 0.72rem;
+    padding: 5px 12px;
+    letter-spacing: 0.03em;
+  }
+
+  .hero-title {
+    font-size: clamp(1.8rem, 7vw, 2.3rem);
+  }
+
+  .hero-pills {
+    gap: 8px;
+  }
+
+  .pill-item {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+
+  .section-title {
+    font-size: clamp(1.6rem, 7vw, 2rem);
+  }
+
+  .section-header {
+    margin-bottom: 36px;
+  }
+
+  .estimator-wrapper {
+    padding: 20px 16px;
+  }
+
+  .estimator-result-card {
+    padding: 20px 14px;
+  }
+
+  .dimensions-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .placement-toggle-group {
+    gap: 8px;
+  }
+
+  .placement-btn {
+    padding: 10px 8px;
+    font-size: 0.8rem;
+  }
+
+  .contact-info-card,
+  .contact-form-card {
+    padding: 22px 16px;
+  }
+
+  .testimonial-card {
+    padding: 24px 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  /* Ultra-small phones like iPhone SE 1st gen */
+  .brand-sub {
+    display: none;
+  }
+
+  .dimensions-row {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-actions {
+    gap: 6px;
+  }
+
+  .btn-icon,
+  .mobile-toggle {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
   }
 }
 

@@ -173,9 +173,24 @@ input, select, textarea {
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
   .section {
     padding-top: 60px;
     padding-bottom: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .section {
+    padding-top: 48px;
+    padding-bottom: 48px;
   }
 }
 

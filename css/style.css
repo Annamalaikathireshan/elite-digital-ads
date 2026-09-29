@@ -1,0 +1,344 @@
+/* ==========================================================================
+   ELITE DIGITAL - LUXURY MONOCHROME DESIGN SYSTEM (WHITE & BLACK)
+   Inspired by Rhino Creative Agency layout & high-end architectural aesthetics
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Dark Mode Palette (Default - Signboard Illumination Aesthetic) */
+  --bg-body: #08080a;
+  --bg-surface: #101014;
+  --bg-card: #15151b;
+  --bg-card-hover: #1c1c24;
+  --bg-glass: rgba(16, 16, 20, 0.75);
+  --bg-elevated: #22222c;
+
+  --text-primary: #ffffff;
+  --text-secondary: #d4d4d8;
+  --text-muted: #8e8e99;
+  --text-inverse: #08080a;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-strong: rgba(255, 255, 255, 0.3);
+  --border-glow: rgba(255, 255, 255, 0.5);
+
+  --accent-white: #ffffff;
+  --accent-black: #000000;
+  --accent-glow: 0 0 25px rgba(255, 255, 255, 0.22);
+  --accent-glow-strong: 0 0 35px rgba(255, 255, 255, 0.45);
+  --accent-halo: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+
+  --card-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+  --card-shadow-hover: 0 30px 60px -12px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 255, 255, 0.08);
+
+  --font-heading: 'Space Grotesk', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  --transition-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Light Theme Modifier */
+[data-theme="light"] {
+  --bg-body: #f8f9fa;
+  --bg-surface: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f2f4;
+  --bg-glass: rgba(255, 255, 255, 0.82);
+  --bg-elevated: #e9ecef;
+
+  --text-primary: #09090b;
+  --text-secondary: #27272a;
+  --text-muted: #6b7280;
+  --text-inverse: #ffffff;
+
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-strong: rgba(0, 0, 0, 0.32);
+  --border-glow: rgba(0, 0, 0, 0.45);
+
+  --accent-glow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --accent-glow-strong: 0 15px 35px rgba(0, 0, 0, 0.2);
+  --accent-halo: radial-gradient(circle, rgba(0, 0, 0, 0.05) 0%, transparent 70%);
+
+  --card-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.08);
+  --card-shadow-hover: 0 25px 45px -10px rgba(0, 0, 0, 0.14), 0 0 20px rgba(0, 0, 0, 0.04);
+}
+
+/* Base Reset & Typography */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg-body);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  line-height: 1.65;
+  overflow-x: hidden;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+  position: relative;
+}
+
+/* Background Subtle Architectural Grid */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: 
+    radial-gradient(var(--border-subtle) 1px, transparent 1px),
+    linear-gradient(to right, var(--border-subtle) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border-subtle) 1px, transparent 1px);
+  background-size: 60px 60px, 120px 120px, 120px 120px;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+p {
+  color: var(--text-secondary);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+/* Layout Utilities */
+.container {
+  width: 100%;
+  max-width: 1320px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.section {
+  padding-top: 100px;
+  padding-bottom: 100px;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+}
+
+/* Section Header Styles */
+.section-header {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 60px auto;
+}
+
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  color: var(--text-primary);
+  margin-bottom: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.section-tag .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--text-primary);
+  box-shadow: 0 0 8px var(--text-primary);
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.section-subtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* Button Component Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Primary High-Contrast Pill (White button in Dark, Black button in Light) */
+.btn-primary {
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+  border: 1px solid var(--text-primary);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
+}
+
+.btn-primary:hover {
+  background-color: transparent;
+  color: var(--text-primary);
+  border-color: var(--text-primary);
+  box-shadow: var(--accent-glow);
+  transform: translateY(-2px);
+}
+
+/* Secondary Ghost Button */
+.btn-secondary {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
+  backdrop-filter: blur(8px);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-elevated);
+  border-color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Outline Button */
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+}
+
+.btn-outline:hover {
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+  border-color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+/* Icon Button */
+.btn-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+}
+
+.btn-icon:hover {
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  transform: scale(1.08);
+}
+
+/* Badge Styles */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-medium);
+  color: var(--text-primary);
+}
+
+/* Glassmorphism Card Base */
+.card-glass {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-glass:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-5px);
+}

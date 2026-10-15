@@ -1,19 +1,19 @@
 /**
- * Elite Digital - Core Application Logic & Interactions
- * Rhino Creative Agency styled dynamic behavior with White & Black luxury aesthetic
+ * Elite Digital - Core Application Logic
+ * Mobile-First, Minimalist Architecture with Touch Interactions & Story Progress
+ * Zero Price Calculations. Direct Contextual WhatsApp Quote Actions.
  */
 
 document.addEventListener("DOMContentLoaded", () => {
   initThemeToggle();
   initStickyHeader();
   initMobileMenu();
-  initTypingEffect();
-  initServicesRender();
+  initOohBoardSwitcher();
+  initClients();
   initPortfolioRender();
-  initEstimator();
-  initMetricsCounter();
-  initTestimonialsSlider();
-  initContactForm();
+  initInstagramFeed();
+  initLightbox();
+  initScrollAnimations();
   initBackToTop();
 });
 
@@ -24,7 +24,7 @@ function initThemeToggle() {
   const toggleBtn = document.getElementById("themeToggleBtn");
   if (!toggleBtn) return;
 
-  const savedTheme = localStorage.getItem("welcome_theme") || "dark";
+  const savedTheme = localStorage.getItem("elite_theme") || "dark";
   document.documentElement.setAttribute("data-theme", savedTheme);
   updateThemeIcon(savedTheme);
 
@@ -32,7 +32,7 @@ function initThemeToggle() {
     const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
     const nextTheme = currentTheme === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", nextTheme);
-    localStorage.setItem("welcome_theme", nextTheme);
+    localStorage.setItem("elite_theme", nextTheme);
     updateThemeIcon(nextTheme);
   });
 }
@@ -52,23 +52,23 @@ function updateThemeIcon(theme) {
 }
 
 /* ==========================================================================
-   2. STICKY HEADER & ACTIVE NAV
+   2. STICKY HEADER
    ========================================================================== */
 function initStickyHeader() {
   const header = document.querySelector(".site-header");
   if (!header) return;
 
   window.addEventListener("scroll", () => {
-    if (window.scrollY > 40) {
+    if (window.scrollY > 25) {
       header.classList.add("scrolled");
     } else {
       header.classList.remove("scrolled");
     }
-  });
+  }, { passive: true });
 }
 
 /* ==========================================================================
-   3. MOBILE MENU TOGGLE
+   3. MOBILE NAVIGATION DRAWER
    ========================================================================== */
 function initMobileMenu() {
   const toggle = document.querySelector(".mobile-toggle");
@@ -79,6 +79,7 @@ function initMobileMenu() {
     toggle.classList.remove("active");
     menu.classList.remove("active");
     toggle.setAttribute("aria-expanded", "false");
+    document.body.classList.remove("menu-open");
   }
 
   toggle.addEventListener("click", (e) => {
@@ -86,481 +87,423 @@ function initMobileMenu() {
     const isActive = toggle.classList.toggle("active");
     menu.classList.toggle("active");
     toggle.setAttribute("aria-expanded", isActive ? "true" : "false");
+    document.body.classList.toggle("menu-open", isActive);
   });
 
-  // Close menu on any link click inside the menu (including drawer action buttons)
-  const menuLinks = menu.querySelectorAll("a");
-  menuLinks.forEach(link => {
-    link.addEventListener("click", () => {
-      closeMenu();
-    });
+  menu.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => closeMenu());
   });
 
-  // Close menu if clicking outside the menu drawer and toggle
   document.addEventListener("click", (e) => {
-    if (menu.classList.contains("active") && !menu.contains(e.target) && !toggle.contains(e.target)) {
-      closeMenu();
-    }
-  });
-
-  // Close on Escape key
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && menu.classList.contains("active")) {
+    if (!menu.contains(e.target) && !toggle.contains(e.target)) {
       closeMenu();
     }
   });
 }
 
 /* ==========================================================================
-   4. DYNAMIC TYPING EFFECT (RHINO STYLE HERO)
+   4. OOH BOARD HERO SHOWCASE (WITH STORY PROGRESS BARS & MOBILE SWIPE)
    ========================================================================== */
-function initTypingEffect() {
-  const typingEl = document.getElementById("typingTarget");
-  if (!typingEl) return;
+let currentOohIndex = 0;
+let progressStartTime = 0;
+let progressAnimFrame = null;
+const SLIDE_DURATION = 6000; // 6 seconds per slide
 
-  const words = [
-    "Outdoor Hoardings",
-    "Mobile Road Shows",
-    "Mega Flex Banners",
-    "Vehicle Fleet Wraps",
-    "Sunpack Pole Kiosks",
-    "Rental Entrance Arches",
-    "Custom Mementos"
-  ];
+function initOohBoardSwitcher() {
+  const tabs = document.querySelectorAll(".ooh-switcher-tab");
+  const boardImg = document.getElementById("oohBoardImg");
+  const boardTag = document.getElementById("oohBoardTag");
+  const boardTitle = document.getElementById("oohBoardTitle");
+  const boardDesc = document.getElementById("oohBoardDesc");
+  const boardMetrics = document.getElementById("oohBoardMetrics");
+  const boardCta = document.getElementById("oohBoardCta");
+  const visualWrapper = document.querySelector(".ooh-visual-frame");
+  const progressFills = document.querySelectorAll(".story-segment .story-fill");
 
-  let wordIndex = 0;
-  let charIndex = 0;
-  let isDeleting = false;
-  let typingSpeed = 100;
+  if (!tabs.length || !boardImg || !ELITE_DATA.oohBoards) return;
 
-  function type() {
-    const currentWord = words[wordIndex];
+  function setBoard(index) {
+    currentOohIndex = index;
+    const board = ELITE_DATA.oohBoards[index];
+    if (!board) return;
 
-    if (isDeleting) {
-      typingEl.textContent = currentWord.substring(0, charIndex - 1);
-      charIndex--;
-      typingSpeed = 45;
-    } else {
-      typingEl.textContent = currentWord.substring(0, charIndex + 1);
-      charIndex++;
-      typingSpeed = 95;
+    // Update active tab styling
+    tabs.forEach((tab, i) => {
+      tab.classList.toggle("active", i === index);
+      tab.setAttribute("aria-selected", i === index ? "true" : "false");
+    });
+
+    // Animate visual frame with subtle transition
+    if (visualWrapper) {
+      visualWrapper.classList.add("changing");
+      setTimeout(() => {
+        boardImg.src = board.image;
+        boardImg.alt = board.title;
+        if (boardTag) boardTag.textContent = board.tag;
+        if (boardTitle) boardTitle.textContent = board.title;
+        if (boardDesc) boardDesc.textContent = board.subtitle;
+
+        // Render metrics pills
+        if (boardMetrics && board.metrics) {
+          boardMetrics.innerHTML = board.metrics.map(m => `
+            <div class="ooh-metric-pill">
+              <span class="metric-val">${m.val}</span>
+              <span class="metric-lbl">${m.label}</span>
+            </div>
+          `).join("");
+        }
+
+        // Update WhatsApp Quote action
+        if (boardCta) {
+          boardCta.href = buildWhatsAppQuoteUrl(board.quoteTopic);
+        }
+
+        visualWrapper.classList.remove("changing");
+      }, 180);
     }
 
-    if (!isDeleting && charIndex === currentWord.length) {
-      // Pause at complete word
-      typingSpeed = 2200;
-      isDeleting = true;
-    } else if (isDeleting && charIndex === 0) {
-      isDeleting = false;
-      wordIndex = (wordIndex + 1) % words.length;
-      typingSpeed = 350;
-    }
-
-    setTimeout(type, typingSpeed);
+    startStoryProgress();
   }
 
-  type();
-}
+  function startStoryProgress() {
+    if (progressAnimFrame) cancelAnimationFrame(progressAnimFrame);
+    progressStartTime = performance.now();
 
-/* ==========================================================================
-   5. SERVICES & PRODUCTS RENDERING
-   ========================================================================== */
-function initServicesRender() {
-  const container = document.getElementById("servicesGrid");
-  if (!container || !WELCOME_DATA.services) return;
+    function step(now) {
+      const elapsed = now - progressStartTime;
+      const pct = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
 
-  container.innerHTML = WELCOME_DATA.services.map(svc => `
-    <div class="service-card" data-service-id="${svc.id}">
-      <div class="service-media">
-        <span class="service-badge">${svc.badge}</span>
-        <img src="${svc.image}" alt="${svc.title}" loading="lazy">
-      </div>
-      <div class="service-body">
-        <span class="service-category">${svc.category}</span>
-        <h3 class="service-title">${svc.title}</h3>
-        <p class="service-desc">${svc.description}</p>
-        <ul class="service-features">
-          ${svc.features.map(f => `<li class="service-feature-item">${f}</li>`).join("")}
-        </ul>
-        <div class="service-footer">
-          <span class="service-price">${svc.priceGuide}</span>
-          <button class="btn btn-outline select-service-btn" data-target="${svc.id}">
-            Get Quote
-          </button>
-        </div>
-      </div>
-    </div>
-  `).join("");
-
-  // Connect "Get Quote" buttons directly to the estimator or form
-  document.querySelectorAll(".select-service-btn").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      const targetId = btn.getAttribute("data-target");
-      const estimatorSelect = document.getElementById("estSignType");
-      if (estimatorSelect) {
-        if (targetId === "outdoor-hoardings") estimatorSelect.value = "hoarding-display";
-        else if (targetId === "mobile-roadshow") estimatorSelect.value = "vehicle-wrap";
-        else if (targetId === "flex-vinyl-printing") estimatorSelect.value = "flex-banner";
-        else if (targetId === "vehicle-wrapping") estimatorSelect.value = "vehicle-wrap";
-        else if (targetId === "sunpack-advertising") estimatorSelect.value = "sunpack-bulk";
-        else if (targetId === "rental-entrance-arch") estimatorSelect.value = "rental-arch";
-        else estimatorSelect.value = "flex-banner";
-        
-        // Trigger calculation
-        estimatorSelect.dispatchEvent(new Event("change"));
-        const estimatorSection = document.getElementById("estimator");
-        if (estimatorSection) {
-          estimatorSection.scrollIntoView({ behavior: "smooth" });
+      progressFills.forEach((fill, i) => {
+        if (i < currentOohIndex) {
+          fill.style.width = "100%";
+        } else if (i === currentOohIndex) {
+          fill.style.width = `${pct}%`;
+        } else {
+          fill.style.width = "0%";
         }
+      });
+
+      if (elapsed < SLIDE_DURATION) {
+        progressAnimFrame = requestAnimationFrame(step);
+      } else {
+        const nextIndex = (currentOohIndex + 1) % ELITE_DATA.oohBoards.length;
+        setBoard(nextIndex);
       }
+    }
+
+    progressAnimFrame = requestAnimationFrame(step);
+  }
+
+  // Click handler for tabs
+  tabs.forEach((tab, i) => {
+    tab.addEventListener("click", () => {
+      setBoard(i);
     });
   });
+
+  // Touch Swipe support for mobile screens
+  const touchFrame = document.getElementById("oohTouchFrame");
+  if (touchFrame) {
+    let startX = 0;
+    let endX = 0;
+
+    touchFrame.addEventListener("touchstart", (e) => {
+      startX = e.changedTouches[0].screenX;
+      if (progressAnimFrame) cancelAnimationFrame(progressAnimFrame);
+    }, { passive: true });
+
+    touchFrame.addEventListener("touchend", (e) => {
+      endX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+      const threshold = 40;
+      if (endX < startX - threshold) {
+        // Swiped Left -> Next
+        const nextIndex = (currentOohIndex + 1) % ELITE_DATA.oohBoards.length;
+        setBoard(nextIndex);
+      } else if (endX > startX + threshold) {
+        // Swiped Right -> Previous
+        const prevIndex = (currentOohIndex - 1 + ELITE_DATA.oohBoards.length) % ELITE_DATA.oohBoards.length;
+        setBoard(prevIndex);
+      } else {
+        startStoryProgress();
+      }
+    }
+  }
+
+  // Pause on desktop hover
+  const heroCard = document.querySelector(".hero-ooh-card");
+  if (heroCard) {
+    heroCard.addEventListener("mouseenter", () => {
+      if (progressAnimFrame) cancelAnimationFrame(progressAnimFrame);
+    });
+    heroCard.addEventListener("mouseleave", () => {
+      startStoryProgress();
+    });
+  }
+
+  // Initialize first board
+  setBoard(0);
 }
 
 /* ==========================================================================
-   6. PORTFOLIO SHOWCASE & LIGHTBOX
+   5. CLIENTS SECTION (STAGE 2: JSON-DRIVEN)
    ========================================================================== */
-function initPortfolioRender() {
-  const container = document.getElementById("portfolioGrid");
-  const filterBtns = document.querySelectorAll(".filter-btn");
-  if (!container || !WELCOME_DATA.portfolio) return;
+async function initClients() {
+  const tickerTrack = document.getElementById("clientTickerTrack");
+  const clientGrid = document.getElementById("clientGrid");
+  if (!tickerTrack && !clientGrid) return;
 
-  function render(items) {
-    container.innerHTML = items.map(p => `
-      <div class="portfolio-card" data-category="${p.category}" data-img="${p.image}" data-title="${p.title}" data-specs="${p.specs}">
-        <div class="portfolio-img-wrapper">
-          <img src="${p.image}" alt="${p.title}" loading="lazy">
-        </div>
-        <div class="portfolio-info">
-          <span class="portfolio-category-tag">${p.categoryName}</span>
-          <h4 class="portfolio-card-title">${p.title}</h4>
-          <p class="portfolio-meta">${p.location} • ${p.client}</p>
+  let clients = ELITE_DATA.fallbackClients;
+
+  // Attempt fetch from data/clients.json
+  try {
+    const res = await fetch("data/clients.json");
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        clients = data;
+      }
+    }
+  } catch (err) {
+    console.info("Using embedded client fallback data:", err.message);
+  }
+
+  // Render Infinite Marquee Ticker
+  if (tickerTrack) {
+    const tickerItems = [...clients, ...clients].map(c => `
+      <div class="client-ticker-card">
+        <div class="client-monogram">${c.name.substring(0, 2).toUpperCase()}</div>
+        <div class="client-info">
+          <strong class="client-name">${c.name}</strong>
+          <span class="client-tag">${c.tag || c.category}</span>
         </div>
       </div>
     `).join("");
-
-    attachLightboxEvents();
+    tickerTrack.innerHTML = tickerItems;
   }
 
-  // Initial render with all items
-  render(WELCOME_DATA.portfolio);
+  // Render Minimalist Client Cards Grid
+  if (clientGrid) {
+    clientGrid.innerHTML = clients.map(c => `
+      <div class="client-card reveal-up">
+        <div class="client-card-header">
+          <div class="client-badge-icon">${c.name.substring(0, 2).toUpperCase()}</div>
+          <span class="client-loc">${c.location || "Tamil Nadu"}</span>
+        </div>
+        <div class="client-card-body">
+          <h4 class="client-title">${c.name}</h4>
+          <span class="client-category">${c.category}</span>
+        </div>
+        <div class="client-card-footer">
+          <span class="client-tag-pill">${c.tag}</span>
+        </div>
+      </div>
+    `).join("");
+  }
+  observeReveals();
+}
 
-  // Filter tab events
+/* ==========================================================================
+   6. FEATURED WORKS & PRODUCTION (STAGE 3: ZERO REPETITION)
+   ========================================================================== */
+function initPortfolioRender() {
+  const grid = document.getElementById("projectsGrid");
+  const filterBtns = document.querySelectorAll(".project-filter-btn");
+  if (!grid || !ELITE_DATA.projects) return;
+
+  function render(filter) {
+    const list = filter === "all" 
+      ? ELITE_DATA.projects 
+      : ELITE_DATA.projects.filter(p => p.category === filter);
+
+    grid.innerHTML = list.map(p => {
+      const whatsappUrl = buildWhatsAppQuoteUrl(p.quoteSubject);
+
+      return `
+        <article class="project-card reveal-up" data-category="${p.category}">
+          <div class="project-media" onclick="openLightbox('${p.image}', '${escapeHtml(p.title)} • ${escapeHtml(p.client)}', '${whatsappUrl}')">
+            <img src="${p.image}" alt="${p.title}" loading="lazy" width="600" height="400">
+            <div class="project-media-overlay">
+              <span class="project-zoom-btn" title="View Fullscreen">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+                </svg>
+              </span>
+            </div>
+            <span class="project-category-tag">${p.categoryLabel}</span>
+          </div>
+          <div class="project-info">
+            <div class="project-client-row">
+              <span class="project-client">${p.client}</span>
+              <span class="project-loc">${p.location}</span>
+            </div>
+            <h3 class="project-title">${p.title}</h3>
+            <p class="project-highlight">${p.highlight}</p>
+            <div class="project-footer">
+              <a href="${whatsappUrl}" target="_blank" rel="noopener" class="project-inquire-link" aria-label="Inquire about ${p.title} on WhatsApp">
+                <span>Inquire</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join("");
+    observeReveals();
+  }
+
   filterBtns.forEach(btn => {
     btn.addEventListener("click", () => {
       filterBtns.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      const filter = btn.getAttribute("data-filter");
-
-      if (filter === "all") {
-        render(WELCOME_DATA.portfolio);
-      } else {
-        const filtered = WELCOME_DATA.portfolio.filter(item => item.category === filter);
-        render(filtered);
-      }
+      render(btn.dataset.filter);
     });
   });
+
+  render("all");
 }
 
-function attachLightboxEvents() {
-  const cards = document.querySelectorAll(".portfolio-card");
-  const modal = document.getElementById("lightboxModal");
-  const modalImg = document.getElementById("lightboxImg");
-  const modalCaption = document.getElementById("lightboxCaption");
-  const closeBtn = document.getElementById("lightboxClose");
+/* ==========================================================================
+   7. LIVE INSTAGRAM FEED (@elitedigitalvdm)
+   ========================================================================== */
+async function initInstagramFeed() {
+  const grid = document.getElementById("instagramGrid");
+  if (!grid) return;
 
-  if (!modal || !modalImg || !modalCaption) return;
+  let feed = ELITE_DATA.fallbackInstagram;
 
-  cards.forEach(card => {
-    card.addEventListener("click", () => {
-      const src = card.getAttribute("data-img");
-      const title = card.getAttribute("data-title");
-      const specs = card.getAttribute("data-specs");
-
-      modalImg.src = src;
-      modalCaption.innerHTML = `<strong>${title}</strong><br><span style="font-size:0.85em;color:#999">${specs}</span>`;
-      modal.classList.add("active");
-    });
-  });
-
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
-      modal.classList.remove("active");
-    });
+  try {
+    const res = await fetch("data/instagram.json");
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        feed = data;
+      }
+    }
+  } catch (err) {
+    console.info("Using embedded instagram fallback feed:", err.message);
   }
+
+  grid.innerHTML = feed.map(item => `
+    <a href="${item.postUrl}" target="_blank" rel="noopener" class="instagram-card reveal-up" aria-label="View Instagram post by @elitedigitalvdm">
+      <img src="${item.image}" alt="Elite Digital Instagram Post" loading="lazy" width="400" height="400">
+      <div class="instagram-overlay">
+        <span class="insta-badge">
+          ${item.type === "reel" ? "▶ Reel" : "📷 Post"}
+        </span>
+        <div class="insta-caption">${escapeHtml(item.caption)}</div>
+      </div>
+    </a>
+  `).join("");
+
+  observeReveals();
+}
+
+function escapeHtml(str) {
+  if (!str) return "";
+  return str.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+}
+
+/* ==========================================================================
+   8. LIGHTBOX MODAL
+   ========================================================================== */
+function initLightbox() {
+  const modal = document.getElementById("lightboxModal");
+  const closeBtn = document.getElementById("lightboxClose");
+  if (!modal || !closeBtn) return;
+
+  closeBtn.addEventListener("click", () => {
+    modal.classList.remove("active");
+    document.body.style.overflow = "";
+  });
 
   modal.addEventListener("click", (e) => {
     if (e.target === modal) {
       modal.classList.remove("active");
+      document.body.style.overflow = "";
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("active")) {
+      modal.classList.remove("active");
+      document.body.style.overflow = "";
     }
   });
 }
 
-/* ==========================================================================
-   7. INTERACTIVE ADVERTISING & PRINTING ESTIMATOR
-   ========================================================================== */
-function initEstimator() {
-  const signTypeSelect = document.getElementById("estSignType");
-  const widthInput = document.getElementById("estWidth");
-  const heightInput = document.getElementById("estHeight");
-  const placementBtns = document.querySelectorAll(".placement-btn");
-  const priceDisplay = document.getElementById("estPriceDisplay");
-  const breakdownDisplay = document.getElementById("estBreakdownDisplay");
-  const whatsappCta = document.getElementById("estWhatsappCta");
+function openLightbox(imgSrc, captionText, quoteUrl) {
+  const modal = document.getElementById("lightboxModal");
+  const modalImg = document.getElementById("lightboxImg");
+  const modalCaption = document.getElementById("lightboxCaption");
+  const modalQuoteBtn = document.getElementById("lightboxQuoteBtn");
+  if (!modal || !modalImg) return;
 
-  if (!signTypeSelect || !widthInput || !heightInput || !priceDisplay) return;
+  modalImg.src = imgSrc;
+  if (modalCaption) modalCaption.textContent = captionText || "";
+  if (modalQuoteBtn && quoteUrl) modalQuoteBtn.href = quoteUrl;
 
-  let placement = "outdoor";
-
-  placementBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      placementBtns.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      placement = btn.getAttribute("data-placement");
-      calculateEstimate();
-    });
-  });
-
-  signTypeSelect.addEventListener("change", calculateEstimate);
-  widthInput.addEventListener("input", calculateEstimate);
-  heightInput.addEventListener("input", calculateEstimate);
-
-  function calculateEstimate() {
-    const signKey = signTypeSelect.value;
-    const rule = WELCOME_DATA.pricingRules[signKey] || WELCOME_DATA.pricingRules["flex-banner"];
-    const width = parseFloat(widthInput.value) || 10;
-    const height = parseFloat(heightInput.value) || 3;
-    const sqFt = width * height;
-
-    // Multiplier for outdoor weatherproofing
-    const placementFactor = placement === "outdoor" ? (rule.outdoorMultiplier || 1.1) : 1.0;
-
-    // Calculation formula
-    const rawCost = (sqFt * rule.baseSqFtRate * placementFactor) + (rule.fixedCost || 0);
-
-    const minEstimate = Math.max(rule.minPrice, Math.round(rawCost * 0.92));
-    const maxEstimate = Math.max(rule.minPrice * 1.15, Math.round(rawCost * 1.15));
-
-    // Update displays
-    priceDisplay.textContent = `₹${minEstimate.toLocaleString("en-IN")} – ₹${maxEstimate.toLocaleString("en-IN")}`;
-    breakdownDisplay.textContent = `${rule.name} • ${sqFt.toFixed(1)} ${rule.unitLabel || "Sq.Ft"} (${width}' × ${height}') • ${placement.toUpperCase()}`;
-
-    // Update WhatsApp pre-filled action link
-    const message = encodeURIComponent(
-      `Hello Elite Digital! I am requesting a detailed quotation for:\n` +
-      `• Service: ${rule.name}\n` +
-      `• Dimensions / Volume: ${width} ft (W) × ${height} ft (H) = ${sqFt.toFixed(1)} ${rule.unitLabel || "Sq.Ft"}\n` +
-      `• Placement / Type: ${placement.toUpperCase()}\n` +
-      `• Estimated Budget Range: ₹${minEstimate.toLocaleString("en-IN")} - ₹${maxEstimate.toLocaleString("en-IN")}\n` +
-      `Please let me know your production timeline and site inspection availability.`
-    );
-
-    if (whatsappCta) {
-      whatsappCta.href = `https://wa.me/${WELCOME_DATA.company.phoneClean}?text=${message}`;
-    }
-  }
-
-  // Trigger initial calculation
-  calculateEstimate();
+  modal.classList.add("active");
+  document.body.style.overflow = "hidden";
 }
 
 /* ==========================================================================
-   8. METRICS COUNTER ANIMATION (INTERSECTION OBSERVER)
+   9. SCROLL REVEAL ANIMATIONS (INTERSECTION OBSERVER)
    ========================================================================== */
-function initMetricsCounter() {
-  const metricNumbers = document.querySelectorAll(".metric-number");
-  if (!metricNumbers.length) return;
+let revealObserver = null;
 
-  let animated = false;
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !animated) {
-        animated = true;
-        metricNumbers.forEach(el => {
-          const target = parseFloat(el.getAttribute("data-target"));
-          const isDecimal = target % 1 !== 0;
-          const duration = 1600;
-          const startTime = performance.now();
-
-          function updateNumber(currentTime) {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            // Ease-out cubic
-            const ease = 1 - Math.pow(1 - progress, 3);
-            const currentVal = target * ease;
-
-            const numSpan = el.querySelector(".num");
-            if (numSpan) {
-              numSpan.textContent = isDecimal 
-                ? currentVal.toFixed(1) 
-                : Math.floor(currentVal).toLocaleString("en-IN");
-            }
-
-            if (progress < 1) {
-              requestAnimationFrame(updateNumber);
-            } else {
-              if (numSpan) {
-                numSpan.textContent = isDecimal 
-                  ? target.toFixed(1) 
-                  : target.toLocaleString("en-IN");
-              }
-            }
-          }
-
-          requestAnimationFrame(updateNumber);
-        });
-      }
-    });
-  }, { threshold: 0.3 });
-
-  const metricsSection = document.getElementById("metrics");
-  if (metricsSection) {
-    observer.observe(metricsSection);
-  }
-}
-
-/* ==========================================================================
-   9. TESTIMONIALS SLIDER (RHINO STYLE TRUSTPILOT REVIEW)
-   ========================================================================== */
-function initTestimonialsSlider() {
-  const container = document.getElementById("testimonialCard");
-  const dotsContainer = document.getElementById("sliderDots");
-  const prevBtn = document.getElementById("sliderPrev");
-  const nextBtn = document.getElementById("sliderNext");
-
-  if (!container || !WELCOME_DATA.testimonials) return;
-
-  let currentIndex = 0;
-  const items = WELCOME_DATA.testimonials;
-
-  // Build dots
-  if (dotsContainer) {
-    dotsContainer.innerHTML = items.map((_, i) => `
-      <div class="dot-btn ${i === 0 ? "active" : ""}" data-index="${i}"></div>
-    `).join("");
-
-    const dots = dotsContainer.querySelectorAll(".dot-btn");
-    dots.forEach(d => {
-      d.addEventListener("click", () => {
-        currentIndex = parseInt(d.getAttribute("data-index"));
-        renderSlide();
+function initScrollAnimations() {
+  if ("IntersectionObserver" in window) {
+    document.documentElement.classList.add("js-animated");
+    revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+          revealObserver.unobserve(entry.target);
+        }
       });
+    }, {
+      threshold: 0.01,
+      rootMargin: "0px 0px 80px 0px"
     });
   }
-
-  function renderSlide() {
-    const t = items[currentIndex];
-    container.innerHTML = `
-      <div class="star-rating">
-        ${Array(t.rating).fill(`
-          <svg class="star-icon" viewBox="0 0 24 24">
-            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-          </svg>
-        `).join("")}
-      </div>
-      <p class="testimonial-text">“${t.text}”</p>
-      <div class="testimonial-author">
-        <h4 class="author-name">${t.name}</h4>
-        <span class="author-role">${t.position}, ${t.company}</span>
-      </div>
-    `;
-
-    if (dotsContainer) {
-      const dots = dotsContainer.querySelectorAll(".dot-btn");
-      dots.forEach((d, i) => {
-        d.classList.toggle("active", i === currentIndex);
-      });
-    }
-  }
-
-  if (prevBtn) {
-    prevBtn.addEventListener("click", () => {
-      currentIndex = (currentIndex - 1 + items.length) % items.length;
-      renderSlide();
-    });
-  }
-
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      currentIndex = (currentIndex + 1) % items.length;
-      renderSlide();
-    });
-  }
-
-  // Initial render
-  renderSlide();
+  observeReveals();
 }
 
-/* ==========================================================================
-   10. CONTACT FORM TO WHATSAPP INTEGRATION
-   ========================================================================== */
-function initContactForm() {
-  const form = document.getElementById("callbackForm");
-  const toast = document.getElementById("formToast");
-  if (!form) return;
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const name = document.getElementById("userName").value.trim();
-    const phone = document.getElementById("userPhone").value.trim();
-    const email = document.getElementById("userEmail").value.trim();
-    const service = document.getElementById("userService").value;
-    const message = document.getElementById("userMessage").value.trim();
-
-    if (!name || !phone) {
-      alert("Please provide your name and phone number.");
-      return;
+function observeReveals() {
+  const reveals = document.querySelectorAll(".reveal-up:not(.in-view), .reveal-fade:not(.in-view)");
+  reveals.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top <= window.innerHeight + 80 && rect.bottom >= -80) {
+      el.classList.add("in-view");
+    } else if (revealObserver) {
+      revealObserver.observe(el);
+    } else {
+      el.classList.add("in-view");
     }
-
-    const waText = encodeURIComponent(
-      `Hello Elite Digital! New inquiry from Website:\n` +
-      `• Name: ${name}\n` +
-      `• Phone: ${phone}\n` +
-      (email ? `• Email: ${email}\n` : "") +
-      `• Required Service: ${service}\n` +
-      (message ? `• Project Details: ${message}\n` : "") +
-      `Please provide estimated cost and timeline.`
-    );
-
-    const waUrl = `https://wa.me/${WELCOME_DATA.company.phoneClean}?text=${waText}`;
-
-    if (toast) {
-      toast.style.display = "block";
-    }
-
-    setTimeout(() => {
-      window.open(waUrl, "_blank");
-      form.reset();
-      if (toast) {
-        setTimeout(() => {
-          toast.style.display = "none";
-        }, 5000);
-      }
-    }, 700);
   });
 }
 
 /* ==========================================================================
-   11. BACK TO TOP BUTTON
+   10. BACK TO TOP BUTTON
    ========================================================================== */
 function initBackToTop() {
   const btn = document.getElementById("backToTop");
   if (!btn) return;
 
   window.addEventListener("scroll", () => {
-    if (window.scrollY > 400) {
-      btn.style.opacity = "1";
-      btn.style.visibility = "visible";
-      btn.style.transform = "translateY(0)";
+    if (window.scrollY > 450) {
+      btn.classList.add("visible");
     } else {
-      btn.style.opacity = "0";
-      btn.style.visibility = "hidden";
-      btn.style.transform = "translateY(10px)";
+      btn.classList.remove("visible");
     }
-  });
+  }, { passive: true });
 
   btn.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });

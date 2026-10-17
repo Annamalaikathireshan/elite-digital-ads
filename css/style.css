@@ -5,14 +5,17 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
-:root {
-  /* Dark Theme Palette (Default: Obsidian Minimalist) */
+:root,
+[data-theme="obsidian"],
+[data-theme="dark"] {
+  /* Theme 1: Obsidian Noir (Default Luxury Dark) */
+  --theme-name: "obsidian";
   --bg-body: #09090b;
   --bg-surface: #111116;
   --bg-card: #15151c;
   --bg-card-hover: #1c1c25;
   --bg-glass: rgba(17, 17, 22, 0.78);
-  --bg-glass-strong: rgba(17, 17, 22, 0.92);
+  --bg-glass-strong: rgba(17, 17, 22, 0.94);
   --bg-elevated: #22222e;
 
   --text-primary: #ffffff;
@@ -26,9 +29,13 @@
   --border-glow: rgba(255, 255, 255, 0.55);
 
   --accent-brand: #ffffff;
+  --accent-secondary: #94a3b8;
   --accent-wa: #25d366;
   --accent-wa-glow: rgba(37, 211, 102, 0.3);
-  --accent-glow: 0 0 35px rgba(255, 255, 255, 0.18);
+  --accent-glow: 0 0 35px rgba(255, 255, 255, 0.2);
+  --hero-glow-1: rgba(255, 255, 255, 0.06);
+  --hero-glow-2: rgba(148, 163, 184, 0.08);
+
   --card-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.65);
   --card-shadow-hover: 0 24px 50px -10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 255, 255, 0.06);
 
@@ -47,8 +54,9 @@
   --transition-smooth: 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Light Theme Modifier */
+/* Theme 2: Modern Minimalist (Clean Editorial Light) */
 [data-theme="light"] {
+  --theme-name: "light";
   --bg-body: #f7f8fa;
   --bg-surface: #ffffff;
   --bg-card: #ffffff;
@@ -68,9 +76,137 @@
   --border-glow: rgba(0, 0, 0, 0.45);
 
   --accent-brand: #0a0a0d;
-  --accent-glow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --accent-secondary: #475569;
+  --accent-glow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  --hero-glow-1: rgba(0, 0, 0, 0.04);
+  --hero-glow-2: rgba(71, 85, 105, 0.05);
+
   --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
-  --card-shadow-hover: 0 20px 45px -10px rgba(0, 0, 0, 0.12), 0 0 20px rgba(0, 0, 0, 0.03);
+  --card-shadow-hover: 0 20px 45px -10px rgba(0, 0, 0, 0.14), 0 0 20px rgba(0, 0, 0, 0.03);
+}
+
+/* Theme 3: Electric Crimson (Adinn-inspired High-Impact Agency) */
+[data-theme="crimson"] {
+  --theme-name: "crimson";
+  --bg-body: #0d0407;
+  --bg-surface: #15070c;
+  --bg-card: #1b0a10;
+  --bg-card-hover: #260e17;
+  --bg-glass: rgba(21, 7, 12, 0.82);
+  --bg-glass-strong: rgba(21, 7, 12, 0.96);
+  --bg-elevated: #33121f;
+
+  --text-primary: #ffffff;
+  --text-secondary: #f3cbd3;
+  --text-muted: #a6737f;
+  --text-inverse: #0d0407;
+
+  --border-subtle: rgba(255, 46, 77, 0.12);
+  --border-medium: rgba(255, 46, 77, 0.24);
+  --border-strong: rgba(255, 46, 77, 0.45);
+  --border-glow: rgba(255, 46, 77, 0.7);
+
+  --accent-brand: #ff2a4b;
+  --accent-secondary: #ff6b81;
+  --accent-glow: 0 0 35px rgba(255, 42, 75, 0.45);
+  --hero-glow-1: rgba(255, 42, 75, 0.18);
+  --hero-glow-2: rgba(255, 107, 129, 0.12);
+
+  --card-shadow: 0 16px 36px -12px rgba(13, 4, 7, 0.85);
+  --card-shadow-hover: 0 24px 50px -10px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 42, 75, 0.18);
+}
+
+/* Theme 4: Royal Emerald (Luxury Enterprise Dark) */
+[data-theme="emerald"] {
+  --theme-name: "emerald";
+  --bg-body: #040d08;
+  --bg-surface: #08170f;
+  --bg-card: #0d2116;
+  --bg-card-hover: #132d1f;
+  --bg-glass: rgba(8, 23, 15, 0.82);
+  --bg-glass-strong: rgba(8, 23, 15, 0.96);
+  --bg-elevated: #1a3c2a;
+
+  --text-primary: #ffffff;
+  --text-secondary: #c7ead7;
+  --text-muted: #729e87;
+  --text-inverse: #040d08;
+
+  --border-subtle: rgba(16, 185, 129, 0.12);
+  --border-medium: rgba(16, 185, 129, 0.24);
+  --border-strong: rgba(16, 185, 129, 0.45);
+  --border-glow: rgba(16, 185, 129, 0.7);
+
+  --accent-brand: #10b981;
+  --accent-secondary: #34d399;
+  --accent-glow: 0 0 35px rgba(16, 185, 129, 0.42);
+  --hero-glow-1: rgba(16, 185, 129, 0.16);
+  --hero-glow-2: rgba(52, 211, 153, 0.1);
+
+  --card-shadow: 0 16px 36px -12px rgba(4, 13, 8, 0.85);
+  --card-shadow-hover: 0 24px 50px -10px rgba(0, 0, 0, 0.9), 0 0 25px rgba(16, 185, 129, 0.18);
+}
+
+/* Theme 5: Midnight Cobalt (High-Tech Ocean Navy) */
+[data-theme="cobalt"] {
+  --theme-name: "cobalt";
+  --bg-body: #040712;
+  --bg-surface: #080f21;
+  --bg-card: #0d1730;
+  --bg-card-hover: #132244;
+  --bg-glass: rgba(8, 15, 33, 0.82);
+  --bg-glass-strong: rgba(8, 15, 33, 0.96);
+  --bg-elevated: #1a2d59;
+
+  --text-primary: #ffffff;
+  --text-secondary: #c9e0fc;
+  --text-muted: #6f8cb5;
+  --text-inverse: #040712;
+
+  --border-subtle: rgba(56, 189, 248, 0.12);
+  --border-medium: rgba(56, 189, 248, 0.24);
+  --border-strong: rgba(56, 189, 248, 0.45);
+  --border-glow: rgba(56, 189, 248, 0.7);
+
+  --accent-brand: #38bdf8;
+  --accent-secondary: #818cf8;
+  --accent-glow: 0 0 35px rgba(56, 189, 248, 0.42);
+  --hero-glow-1: rgba(56, 189, 248, 0.16);
+  --hero-glow-2: rgba(129, 140, 248, 0.12);
+
+  --card-shadow: 0 16px 36px -12px rgba(4, 7, 18, 0.85);
+  --card-shadow-hover: 0 24px 50px -10px rgba(0, 0, 0, 0.9), 0 0 25px rgba(56, 189, 248, 0.18);
+}
+
+/* Theme 6: Solar Amber (Warm Creative Studio) */
+[data-theme="amber"] {
+  --theme-name: "amber";
+  --bg-body: #0c0905;
+  --bg-surface: #141009;
+  --bg-card: #1c160e;
+  --bg-card-hover: #272014;
+  --bg-glass: rgba(20, 16, 9, 0.82);
+  --bg-glass-strong: rgba(20, 16, 9, 0.96);
+  --bg-elevated: #352a1a;
+
+  --text-primary: #ffffff;
+  --text-secondary: #f6e2c2;
+  --text-muted: #9f8c6e;
+  --text-inverse: #0c0905;
+
+  --border-subtle: rgba(245, 158, 11, 0.12);
+  --border-medium: rgba(245, 158, 11, 0.24);
+  --border-strong: rgba(245, 158, 11, 0.45);
+  --border-glow: rgba(245, 158, 11, 0.7);
+
+  --accent-brand: #f59e0b;
+  --accent-secondary: #fbbf24;
+  --accent-glow: 0 0 35px rgba(245, 158, 11, 0.42);
+  --hero-glow-1: rgba(245, 158, 11, 0.16);
+  --hero-glow-2: rgba(251, 191, 36, 0.1);
+
+  --card-shadow: 0 16px 36px -12px rgba(12, 9, 5, 0.85);
+  --card-shadow-hover: 0 24px 50px -10px rgba(0, 0, 0, 0.9), 0 0 25px rgba(245, 158, 11, 0.18);
 }
 
 /* Base Reset & Typography */

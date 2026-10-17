@@ -1,82 +1,24 @@
 [
-  {
-    "id": "c1",
-    "name": "Kalyan Jewellers",
-    "category": "Jewellery & Retail",
-    "location": "Tamil Nadu Highways",
-    "tag": "Mega Unipoles",
-    "icon": "gem"
-  },
-  {
-    "id": "c2",
-    "name": "Arun Excello",
-    "category": "Real Estate & Housing",
-    "location": "Cuddalore & Chennai",
-    "tag": "Highway Gantries",
-    "icon": "building"
-  },
-  {
-    "id": "c3",
-    "name": "Aavin Milk & Dairy",
-    "category": "FMCG & Consumer Goods",
-    "location": "Regional Belts",
-    "tag": "Transit Vehicle Wraps",
-    "icon": "truck"
-  },
-  {
-    "id": "c4",
-    "name": "Apollo Hospitals",
-    "category": "Healthcare & Wellness",
-    "location": "Central Tamil Nadu",
-    "tag": "Arterial Billboards",
-    "icon": "activity"
-  },
-  {
-    "id": "c5",
-    "name": "Annamalai University",
-    "category": "Higher Education",
-    "location": "Chidambaram",
-    "tag": "Admissions Roadshows",
-    "icon": "award"
-  },
-  {
-    "id": "c6",
-    "name": "Poorvika Mobiles",
-    "category": "Electronics Retail",
-    "location": "Multi-Town Outlets",
-    "tag": "Sunpack Campaigns",
-    "icon": "smartphone"
-  },
-  {
-    "id": "c7",
-    "name": "Vasanth & Co",
-    "category": "Home Appliances",
-    "location": "Vriddhachalam & Neyveli",
-    "tag": "Festival Flex & Signage",
-    "icon": "tv"
-  },
-  {
-    "id": "c8",
-    "name": "MRF Tyres",
-    "category": "Automotive Fleet",
-    "location": "State Highways",
-    "tag": "Prime Steel Hoardings",
-    "icon": "disc"
-  },
-  {
-    "id": "c9",
-    "name": "Sri Krishna Sweets",
-    "category": "Food & Confectionery",
-    "location": "Town Centers",
-    "tag": "City Lightboxes",
-    "icon": "shopping-bag"
-  },
-  {
-    "id": "c10",
-    "name": "Lalitha Jewellery",
-    "category": "Gold & Diamonds",
-    "location": "Highway Arteries",
-    "tag": "High-Power LED Billboards",
-    "icon": "shield"
-  }
+  { "id": "c1", "name": "JKR Tex" },
+  { "id": "c2", "name": "Arun Fashion" },
+  { "id": "c3", "name": "Alagar Super Market" },
+  { "id": "c4", "name": "7 Mobiles" },
+  { "id": "c5", "name": "Siva Sakthi Mobiles and Appliancies" },
+  { "id": "c6", "name": "Rasi Gold" },
+  { "id": "c7", "name": "Sarswathi school" },
+  { "id": "c8", "name": "CSM College" },
+  { "id": "c9", "name": "Little pika" },
+  { "id": "c10", "name": "Aasife Briyani" },
+  { "id": "c11", "name": "Thellai Electricals" },
+  { "id": "c12", "name": "Virudhachalam Municpalitiy" },
+  { "id": "c13", "name": "Gov. PHC" },
+  { "id": "c14", "name": "Aditya Snacks" },
+  { "id": "c15", "name": "SKR Groups" },
+  { "id": "c16", "name": "Thanjai Veerasami Restraunt" },
+  { "id": "c17", "name": "5K Car Care" },
+  { "id": "c18", "name": "Thayilpatti Krishna Pannai Pal" },
+  { "id": "c19", "name": "King Ultra Tires" },
+  { "id": "c20", "name": "MDP Clinic" },
+  { "id": "c21", "name": "GH Virudhachalam" },
+  { "id": "c22", "name": "Mangalam Furnitures" }
 ]

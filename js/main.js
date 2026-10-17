@@ -1,54 +1,120 @@
 /**
- * Elite Digital - Core Application Logic
- * Mobile-First, Minimalist Architecture with Touch Interactions & Story Progress
- * Zero Price Calculations. Direct Contextual WhatsApp Quote Actions.
+ * Elite Digital & Ads - Core Application Logic
+ * Full-Service Advertising Agency Architecture
+ * Multi-Theme Engine & Adinn-Inspired Full-Screen Aperture Zoom (Desktop + Mobile)
  */
 
 document.addEventListener("DOMContentLoaded", () => {
-  initThemeToggle();
+  initThemeEngine();
   initStickyHeader();
   initMobileMenu();
-  initOohBoardSwitcher();
+  initAgencyHeroPinAnimation();
+  initBillboardShowcase();
   initClients();
   initPortfolioRender();
   initInstagramFeed();
   initLightbox();
   initScrollAnimations();
   initBackToTop();
+  initGsapPageAnimations();
 });
 
 /* ==========================================================================
-   1. THEME TOGGLE (DARK MODE / LIGHT MODE)
+   1. MULTI-THEME ENGINE (6 CURATED AGENCY AESTHETICS)
    ========================================================================== */
-function initThemeToggle() {
-  const toggleBtn = document.getElementById("themeToggleBtn");
-  if (!toggleBtn) return;
+const THEMES = [
+  { id: "obsidian", name: "Obsidian Noir", color: "#ffffff" },
+  { id: "light", name: "Modern Light", color: "#f1f2f6" },
+  { id: "crimson", name: "Electric Crimson", color: "#ff2a4b" },
+  { id: "emerald", name: "Royal Emerald", color: "#10b981" },
+  { id: "cobalt", name: "Midnight Cobalt", color: "#38bdf8" },
+  { id: "amber", name: "Solar Amber", color: "#f59e0b" }
+];
 
-  const savedTheme = localStorage.getItem("elite_theme") || "dark";
-  document.documentElement.setAttribute("data-theme", savedTheme);
-  updateThemeIcon(savedTheme);
+function initThemeEngine() {
+  const triggerBtn = document.getElementById("themePickerBtn");
+  const popover = document.getElementById("themePopover");
+  const currentSwatch = document.getElementById("themeCurrentSwatch");
+  const pickerLabel = document.getElementById("themePickerText");
+  const themeBtns = document.querySelectorAll(".theme-item-btn");
+  const mobileDots = document.querySelectorAll(".m-theme-dot");
 
-  toggleBtn.addEventListener("click", () => {
-    const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
-    const nextTheme = currentTheme === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", nextTheme);
-    localStorage.setItem("elite_theme", nextTheme);
-    updateThemeIcon(nextTheme);
-  });
-}
-
-function updateThemeIcon(theme) {
-  const iconSun = document.getElementById("iconSun");
-  const iconMoon = document.getElementById("iconMoon");
-  if (!iconSun || !iconMoon) return;
-
-  if (theme === "light") {
-    iconSun.style.display = "none";
-    iconMoon.style.display = "block";
-  } else {
-    iconSun.style.display = "block";
-    iconMoon.style.display = "none";
+  let savedTheme = localStorage.getItem("elite_theme") || "obsidian";
+  if (!THEMES.some(t => t.id === savedTheme)) {
+    savedTheme = "obsidian";
   }
+
+  function applyTheme(themeId) {
+    document.documentElement.setAttribute("data-theme", themeId);
+    localStorage.setItem("elite_theme", themeId);
+
+    const themeObj = THEMES.find(t => t.id === themeId) || THEMES[0];
+    if (currentSwatch) {
+      currentSwatch.style.background = themeObj.color;
+    }
+    if (pickerLabel) {
+      pickerLabel.textContent = themeObj.name;
+    }
+
+    themeBtns.forEach(btn => {
+      btn.classList.toggle("active", btn.getAttribute("data-theme-val") === themeId);
+    });
+
+    mobileDots.forEach(dot => {
+      dot.classList.toggle("active", dot.getAttribute("data-theme-val") === themeId);
+    });
+  }
+
+  // Initial apply
+  applyTheme(savedTheme);
+
+  // Toggle popover
+  if (triggerBtn && popover) {
+    triggerBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = popover.classList.toggle("is-open");
+      triggerBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    // Close when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!popover.contains(e.target) && !triggerBtn.contains(e.target)) {
+        popover.classList.remove("is-open");
+        triggerBtn.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        popover.classList.remove("is-open");
+        triggerBtn.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  // Popover buttons
+  themeBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const themeVal = btn.getAttribute("data-theme-val");
+      if (themeVal) {
+        applyTheme(themeVal);
+        if (popover && triggerBtn) {
+          popover.classList.remove("is-open");
+          triggerBtn.setAttribute("aria-expanded", "false");
+        }
+      }
+    });
+  });
+
+  // Mobile drawer theme dots
+  mobileDots.forEach(dot => {
+    dot.addEventListener("click", () => {
+      const themeVal = dot.getAttribute("data-theme-val");
+      if (themeVal) {
+        applyTheme(themeVal);
+      }
+    });
+  });
 }
 
 /* ==========================================================================
@@ -102,165 +168,182 @@ function initMobileMenu() {
 }
 
 /* ==========================================================================
-   4. OOH BOARD HERO SHOWCASE (WITH STORY PROGRESS BARS & MOBILE SWIPE)
+   4. ADINN-STYLE FULL-SCREEN APERTURE ZOOM (DESKTOP + TABLET + MOBILE)
    ========================================================================== */
-let currentOohIndex = 0;
-let progressStartTime = 0;
-let progressAnimFrame = null;
-const SLIDE_DURATION = 6000; // 6 seconds per slide
+function initAgencyHeroPinAnimation() {
+  if (!window.gsap || !window.ScrollTrigger) return;
+  gsap.registerPlugin(ScrollTrigger);
 
-function initOohBoardSwitcher() {
-  const tabs = document.querySelectorAll(".ooh-switcher-tab");
-  const boardImg = document.getElementById("oohBoardImg");
-  const boardTag = document.getElementById("oohBoardTag");
-  const boardTitle = document.getElementById("oohBoardTitle");
-  const boardDesc = document.getElementById("oohBoardDesc");
-  const boardMetrics = document.getElementById("oohBoardMetrics");
-  const boardCta = document.getElementById("oohBoardCta");
-  const visualWrapper = document.querySelector(".ooh-visual-frame");
-  const progressFills = document.querySelectorAll(".story-segment .story-fill");
+  const heroSection = document.querySelector(".agency-hero-pin");
+  const aperturePortal = document.getElementById("heroAperturePortal");
+  const showcaseFrame = document.getElementById("heroShowcaseFrame");
 
-  if (!tabs.length || !boardImg || !ELITE_DATA.oohBoards) return;
+  if (!heroSection || !aperturePortal || !showcaseFrame) return;
 
-  function setBoard(index) {
-    currentOohIndex = index;
-    const board = ELITE_DATA.oohBoards[index];
-    if (!board) return;
-
-    // Update active tab styling
-    tabs.forEach((tab, i) => {
-      tab.classList.toggle("active", i === index);
-      tab.setAttribute("aria-selected", i === index ? "true" : "false");
-    });
-
-    // Animate visual frame with subtle transition
-    if (visualWrapper) {
-      visualWrapper.classList.add("changing");
-      setTimeout(() => {
-        boardImg.src = board.image;
-        boardImg.alt = board.title;
-        if (boardTag) boardTag.textContent = board.tag;
-        if (boardTitle) boardTitle.textContent = board.title;
-        if (boardDesc) boardDesc.textContent = board.subtitle;
-
-        // Render metrics pills
-        if (boardMetrics && board.metrics) {
-          boardMetrics.innerHTML = board.metrics.map(m => `
-            <div class="ooh-metric-pill">
-              <span class="metric-val">${m.val}</span>
-              <span class="metric-lbl">${m.label}</span>
-            </div>
-          `).join("");
-        }
-
-        // Update WhatsApp Quote action
-        if (boardCta) {
-          boardCta.href = buildWhatsAppQuoteUrl(board.quoteTopic);
-        }
-
-        visualWrapper.classList.remove("changing");
-      }, 180);
-    }
-
-    startStoryProgress();
-  }
-
-  function startStoryProgress() {
-    if (progressAnimFrame) cancelAnimationFrame(progressAnimFrame);
-    progressStartTime = performance.now();
-
-    function step(now) {
-      const elapsed = now - progressStartTime;
-      const pct = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
-
-      progressFills.forEach((fill, i) => {
-        if (i < currentOohIndex) {
-          fill.style.width = "100%";
-        } else if (i === currentOohIndex) {
-          fill.style.width = `${pct}%`;
-        } else {
-          fill.style.width = "0%";
-        }
-      });
-
-      if (elapsed < SLIDE_DURATION) {
-        progressAnimFrame = requestAnimationFrame(step);
-      } else {
-        const nextIndex = (currentOohIndex + 1) % ELITE_DATA.oohBoards.length;
-        setBoard(nextIndex);
-      }
-    }
-
-    progressAnimFrame = requestAnimationFrame(step);
-  }
-
-  // Click handler for tabs
-  tabs.forEach((tab, i) => {
-    tab.addEventListener("click", () => {
-      setBoard(i);
-    });
+  // Set initial 3D transforms
+  gsap.set(showcaseFrame, {
+    scale: 0.88,
+    opacity: 0.18,
+    y: 35,
+    transformPerspective: 1000
   });
 
-  // Touch Swipe support for mobile screens
-  const touchFrame = document.getElementById("oohTouchFrame");
-  if (touchFrame) {
-    let startX = 0;
-    let endX = 0;
+  gsap.set(aperturePortal, {
+    scale: 1,
+    opacity: 1
+  });
 
-    touchFrame.addEventListener("touchstart", (e) => {
-      startX = e.changedTouches[0].screenX;
-      if (progressAnimFrame) cancelAnimationFrame(progressAnimFrame);
-    }, { passive: true });
+  // Calculate dynamic scale needed to punch cleanly out of viewport
+  const isMobile = window.innerWidth < 768;
+  const zoomScale = isMobile ? 32 : 26;
 
-    touchFrame.addEventListener("touchend", (e) => {
-      endX = e.changedTouches[0].screenX;
-      handleSwipe();
-    }, { passive: true });
-
-    function handleSwipe() {
-      const threshold = 40;
-      if (endX < startX - threshold) {
-        // Swiped Left -> Next
-        const nextIndex = (currentOohIndex + 1) % ELITE_DATA.oohBoards.length;
-        setBoard(nextIndex);
-      } else if (endX > startX + threshold) {
-        // Swiped Right -> Previous
-        const prevIndex = (currentOohIndex - 1 + ELITE_DATA.oohBoards.length) % ELITE_DATA.oohBoards.length;
-        setBoard(prevIndex);
-      } else {
-        startStoryProgress();
-      }
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: heroSection,
+      start: "top top",
+      end: "+=220%",
+      scrub: 0.75,
+      pin: true,
+      anticipatePin: 1,
+      invalidateOnRefresh: true
     }
-  }
+  });
 
-  // Pause on desktop hover
-  const heroCard = document.querySelector(".hero-ooh-card");
-  if (heroCard) {
-    heroCard.addEventListener("mouseenter", () => {
-      if (progressAnimFrame) cancelAnimationFrame(progressAnimFrame);
-    });
-    heroCard.addEventListener("mouseleave", () => {
-      startStoryProgress();
-    });
-  }
+  tl.to(aperturePortal, {
+    scale: zoomScale,
+    opacity: 0,
+    duration: 1.4,
+    ease: "power2.inOut"
+  }, 0)
+  .to(showcaseFrame, {
+    scale: 1,
+    opacity: 1,
+    y: 0,
+    duration: 1.4,
+    ease: "power2.out"
+  }, 0.12);
 
-  // Initialize first board
-  setBoard(0);
+  // Smooth scroll trigger recalculation on orientation / resize
+  window.addEventListener("resize", () => {
+    ScrollTrigger.refresh();
+  }, { passive: true });
 }
 
 /* ==========================================================================
-   5. CLIENTS SECTION (STAGE 2: JSON-DRIVEN)
+   5. 3D BILLBOARD SHOWCASE (ROTATING CAMPAIGN SLIDES + LIGHTBOX + SWIPE)
+   ========================================================================== */
+let currentBillboardIndex = 0;
+let billboardAutoTimer = null;
+
+function initBillboardShowcase() {
+  const slides = document.querySelectorAll(".billboard-slide");
+  const dots = document.querySelectorAll(".b-page-dot");
+  const prevBtn = document.getElementById("bSlidePrev");
+  const nextBtn = document.getElementById("bSlideNext");
+  const screen = document.getElementById("billboardScreen");
+
+  if (!slides.length) return;
+
+  function showSlide(index) {
+    currentBillboardIndex = (index + slides.length) % slides.length;
+    slides.forEach((s, i) => {
+      s.classList.toggle("active", i === currentBillboardIndex);
+    });
+    dots.forEach((d, i) => {
+      d.classList.toggle("active", i === currentBillboardIndex);
+    });
+  }
+
+  function startAutoCycle() {
+    stopAutoCycle();
+    billboardAutoTimer = setInterval(() => {
+      showSlide(currentBillboardIndex + 1);
+    }, 4500);
+  }
+
+  function stopAutoCycle() {
+    if (billboardAutoTimer) clearInterval(billboardAutoTimer);
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", () => {
+      stopAutoCycle();
+      showSlide(currentBillboardIndex - 1);
+      startAutoCycle();
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      stopAutoCycle();
+      showSlide(currentBillboardIndex + 1);
+      startAutoCycle();
+    });
+  }
+
+  dots.forEach(dot => {
+    dot.addEventListener("click", () => {
+      const target = parseInt(dot.getAttribute("data-slide-target"), 10);
+      if (!isNaN(target)) {
+        stopAutoCycle();
+        showSlide(target);
+        startAutoCycle();
+      }
+    });
+  });
+
+  if (screen) {
+    screen.addEventListener("mouseenter", stopAutoCycle);
+    screen.addEventListener("mouseleave", startAutoCycle);
+
+    // Lightbox on slide click
+    slides.forEach(slide => {
+      slide.addEventListener("click", () => {
+        const img = slide.querySelector("img");
+        const title = slide.querySelector(".slide-heading");
+        const sub = slide.querySelector(".slide-sub");
+        if (img) {
+          const cap = (title ? title.textContent : "") + (sub ? " • " + sub.textContent : "");
+          const waUrl = buildWhatsAppQuoteUrl(title ? title.textContent : "Advertising Campaign");
+          openLightbox(img.src, cap, waUrl);
+        }
+      });
+    });
+
+    // Touch swipe on mobile
+    let touchStartX = 0;
+    screen.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      stopAutoCycle();
+    }, { passive: true });
+
+    screen.addEventListener("touchend", (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      if (touchEndX < touchStartX - 40) {
+        showSlide(currentBillboardIndex + 1);
+      } else if (touchEndX > touchStartX + 40) {
+        showSlide(currentBillboardIndex - 1);
+      }
+      startAutoCycle();
+    }, { passive: true });
+  }
+
+  showSlide(0);
+  startAutoCycle();
+}
+
+/* ==========================================================================
+   5. CLIENTS SECTION: MOBILE-FIRST EDITORIAL ACCORDION
    ========================================================================== */
 async function initClients() {
-  const tickerTrack = document.getElementById("clientTickerTrack");
-  const clientGrid = document.getElementById("clientGrid");
-  if (!tickerTrack && !clientGrid) return;
+  const accordion = document.getElementById("clientsAccordion");
+  if (!accordion) return;
 
   let clients = ELITE_DATA.fallbackClients;
 
   // Attempt fetch from data/clients.json
   try {
-    const res = await fetch("data/clients.json");
+    const res = await fetch(`data/clients.json?t=${Date.now()}`, { cache: "no-store" });
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
@@ -271,63 +354,117 @@ async function initClients() {
     console.info("Using embedded client fallback data:", err.message);
   }
 
-  // Render Infinite Marquee Ticker
-  if (tickerTrack) {
-    const tickerItems = [...clients, ...clients].map(c => `
-      <div class="client-ticker-card">
-        <div class="client-monogram">${c.name.substring(0, 2).toUpperCase()}</div>
-        <div class="client-info">
-          <strong class="client-name">${c.name}</strong>
-          <span class="client-tag">${c.tag || c.category}</span>
-        </div>
-      </div>
-    `).join("");
-    tickerTrack.innerHTML = tickerItems;
-  }
+  // Helper for monogram initials
+  const getInitials = (name) => {
+    if (!name) return "ED";
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
 
-  // Render Minimalist Client Cards Grid
-  if (clientGrid) {
-    clientGrid.innerHTML = clients.map(c => `
-      <div class="client-card reveal-up">
-        <div class="client-card-header">
-          <div class="client-badge-icon">${c.name.substring(0, 2).toUpperCase()}</div>
-          <span class="client-loc">${c.location || "Tamil Nadu"}</span>
-        </div>
-        <div class="client-card-body">
-          <h4 class="client-title">${c.name}</h4>
-          <span class="client-category">${c.category}</span>
-        </div>
-        <div class="client-card-footer">
-          <span class="client-tag-pill">${c.tag}</span>
+  // Render Mobile-First Minimalist Accordion Items
+  accordion.innerHTML = clients.map((c, index) => {
+    const num = String(index + 1).padStart(2, "0");
+    const initials = getInitials(c.name);
+    const isOpen = index === 0; // First item open initially for immediate interaction affordance
+    const whatsappMsg = `Hi Elite Digital, I am interested in outdoor advertising solutions similar to your work for ${c.name}. Please share details and pricing.`;
+    const whatsappUrl = buildWhatsAppQuoteUrl(whatsappMsg);
+
+    return `
+      <div class="client-acc-item ${isOpen ? "is-open" : ""}" data-client-id="${c.id || "c" + (index + 1)}">
+        <button class="client-acc-header" type="button" aria-expanded="${isOpen ? "true" : "false"}" aria-controls="client-drawer-${index}">
+          <div class="client-acc-left">
+            <span class="client-acc-index">${num}</span>
+            <div class="client-acc-avatar">${initials}</div>
+            <span class="client-acc-title">${c.name}</span>
+          </div>
+          <div class="client-acc-toggle" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </button>
+        <div class="client-acc-body" id="client-drawer-${index}">
+          <div class="client-acc-inner">
+            <div class="client-acc-drawer">
+              <p class="client-acc-highlight">
+                Partnering with <strong>${c.name}</strong> for premier outdoor branding, high-visibility hoardings, and wide-format installations.
+              </p>
+              <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="client-acc-cta-btn" aria-label="Inquire similar work for ${c.name} on WhatsApp">
+                <svg width="16" height="16" viewBox="0 0 24 24">
+                  <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2ZM12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.8 7.37 7.5 3.67 12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15ZM16.56 14.37C16.31 14.25 15.09 13.65 14.86 13.57C14.64 13.49 14.47 13.45 14.31 13.7C14.14 13.95 13.66 14.51 13.51 14.68C13.37 14.85 13.22 14.87 12.97 14.75C12.72 14.62 11.92 14.36 10.97 13.52C10.23 12.86 9.73 12.04 9.59 11.79C9.44 11.54 9.57 11.41 9.7 11.28C9.81 11.17 9.94 11 10.07 10.85C10.19 10.7 10.24 10.59 10.32 10.42C10.4 10.26 10.36 10.11 10.3 9.99C10.24 9.87 9.75 8.66 9.54 8.16C9.34 7.67 9.14 7.74 8.99 7.73C8.84 7.72 8.68 7.72 8.51 7.72C8.35 7.72 8.08 7.78 7.85 8.03C7.63 8.28 7 8.87 7 10.07C7 11.27 7.87 12.43 8 12.6C8.12 12.77 9.73 15.25 12.19 16.31C12.78 16.56 13.23 16.71 13.59 16.82C14.18 17.01 14.72 16.98 15.15 16.92C15.63 16.85 16.62 16.32 16.83 15.74C17.03 15.16 17.03 14.66 16.97 14.56C16.91 14.45 16.81 14.41 16.56 14.37Z"/>
+                </svg>
+                <span>Request Similar Work</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
-    `).join("");
-  }
+    `;
+  }).join("");
+
+  // Attach mobile-first single-open accordion toggle listeners
+  const items = accordion.querySelectorAll(".client-acc-item");
+  items.forEach((item) => {
+    const header = item.querySelector(".client-acc-header");
+    if (!header) return;
+
+    header.addEventListener("click", () => {
+      const isCurrentlyOpen = item.classList.contains("is-open");
+
+      // Close other items (smart single-open on mobile to avoid endless scroll)
+      items.forEach((other) => {
+        if (other !== item && other.classList.contains("is-open")) {
+          other.classList.remove("is-open");
+          const otherHeader = other.querySelector(".client-acc-header");
+          if (otherHeader) otherHeader.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      // Toggle current item
+      if (isCurrentlyOpen) {
+        item.classList.remove("is-open");
+        header.setAttribute("aria-expanded", "false");
+      } else {
+        item.classList.add("is-open");
+        header.setAttribute("aria-expanded", "true");
+      }
+    });
+  });
+
   observeReveals();
 }
 
 /* ==========================================================================
-   6. FEATURED WORKS & PRODUCTION (STAGE 3: ZERO REPETITION)
+   6. OUR WORK & ADVERTISING SOLUTIONS (CATEGORY FILTERS & VISUAL CARDS)
    ========================================================================== */
 function initPortfolioRender() {
   const grid = document.getElementById("projectsGrid");
-  const filterBtns = document.querySelectorAll(".project-filter-btn");
+  const filterBtns = document.querySelectorAll(".work-filter-btn");
   if (!grid || !ELITE_DATA.projects) return;
 
-  function render(filter) {
-    const list = filter === "all" 
-      ? ELITE_DATA.projects 
-      : ELITE_DATA.projects.filter(p => p.category === filter);
+  function renderCards(filterCategory = "all") {
+    const filteredProjects = filterCategory === "all"
+      ? ELITE_DATA.projects
+      : ELITE_DATA.projects.filter(p => {
+          if (filterCategory === "hoardings") return p.category === "hoardings";
+          if (filterCategory === "roadshow") return p.category === "roadshow";
+          if (filterCategory === "printing") return p.category === "printing";
+          if (filterCategory === "transit") return p.category === "transit" || p.category === "vehicle";
+          return true;
+        });
 
-    grid.innerHTML = list.map(p => {
+    grid.innerHTML = filteredProjects.map(p => {
       const whatsappUrl = buildWhatsAppQuoteUrl(p.quoteSubject);
 
       return `
-        <article class="project-card reveal-up" data-category="${p.category}">
+        <article class="project-card reveal-up in-view" data-id="${p.id}" data-category="${p.category}">
           <div class="project-media" onclick="openLightbox('${p.image}', '${escapeHtml(p.title)} • ${escapeHtml(p.client)}', '${whatsappUrl}')">
             <img src="${p.image}" alt="${p.title}" loading="lazy" width="600" height="400">
             <div class="project-media-overlay">
-              <span class="project-zoom-btn" title="View Fullscreen">
+              <span class="project-zoom-btn" title="View Full Photo">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
                 </svg>
@@ -344,8 +481,11 @@ function initPortfolioRender() {
             <p class="project-highlight">${p.highlight}</p>
             <div class="project-footer">
               <a href="${whatsappUrl}" target="_blank" rel="noopener" class="project-inquire-link" aria-label="Inquire about ${p.title} on WhatsApp">
-                <span>Inquire</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                </svg>
+                <span>WhatsApp Rates</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <line x1="7" y1="17" x2="17" y2="7"></line>
                   <polyline points="7 7 17 7 17 17"></polyline>
                 </svg>
@@ -355,18 +495,28 @@ function initPortfolioRender() {
         </article>
       `;
     }).join("");
-    observeReveals();
+
+    if (window.gsap) {
+      gsap.fromTo(grid.querySelectorAll(".project-card"),
+        { opacity: 0, y: 25, scale: 0.97 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.45, stagger: 0.05, ease: "power2.out" }
+      );
+    }
   }
 
+  // Filter button click listeners
   filterBtns.forEach(btn => {
     btn.addEventListener("click", () => {
-      filterBtns.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      render(btn.dataset.filter);
+      const filter = btn.getAttribute("data-filter") || "all";
+      filterBtns.forEach(b => {
+        b.classList.toggle("active", b === btn);
+        b.setAttribute("aria-selected", b === btn ? "true" : "false");
+      });
+      renderCards(filter);
     });
   });
 
-  render("all");
+  renderCards("all");
 }
 
 /* ==========================================================================
@@ -379,7 +529,7 @@ async function initInstagramFeed() {
   let feed = ELITE_DATA.fallbackInstagram;
 
   try {
-    const res = await fetch("data/instagram.json");
+    const res = await fetch(`data/instagram.json?t=${Date.now()}`, { cache: "no-store" });
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
@@ -392,7 +542,7 @@ async function initInstagramFeed() {
 
   grid.innerHTML = feed.map(item => `
     <a href="${item.postUrl}" target="_blank" rel="noopener" class="instagram-card reveal-up" aria-label="View Instagram post by @elitedigitalvdm">
-      <img src="${item.image}" alt="Elite Digital Instagram Post" loading="lazy" width="400" height="400">
+      <img src="${item.image}" alt="Elite Digital and Ads Instagram Post" loading="lazy" width="400" height="400">
       <div class="instagram-overlay">
         <span class="insta-badge">
           ${item.type === "reel" ? "▶ Reel" : "📷 Post"}
@@ -443,6 +593,7 @@ function openLightbox(imgSrc, captionText, quoteUrl) {
   const modalImg = document.getElementById("lightboxImg");
   const modalCaption = document.getElementById("lightboxCaption");
   const modalQuoteBtn = document.getElementById("lightboxQuoteBtn");
+  const modalContent = document.querySelector(".lightbox-content");
   if (!modal || !modalImg) return;
 
   modalImg.src = imgSrc;
@@ -451,6 +602,13 @@ function openLightbox(imgSrc, captionText, quoteUrl) {
 
   modal.classList.add("active");
   document.body.style.overflow = "hidden";
+
+  if (window.gsap && modalContent) {
+    gsap.fromTo(modalContent, 
+      { scale: 0.88, opacity: 0 }, 
+      { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.6)" }
+    );
+  }
 }
 
 /* ==========================================================================
@@ -507,5 +665,52 @@ function initBackToTop() {
 
   btn.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
+
+/* ==========================================================================
+   11. GSAP FLUID ENTRANCE ANIMATIONS (MOBILE & DESKTOP)
+   ========================================================================== */
+function initGsapPageAnimations() {
+  if (!window.gsap) return;
+
+  // Header entrance
+  gsap.from(".site-header", { 
+    y: -30, 
+    opacity: 0, 
+    duration: 0.7, 
+    ease: "power3.out" 
+  });
+
+  // Aperture Hero Entrance Stagger
+  gsap.from(".aperture-agency-tag", { 
+    y: 18, 
+    opacity: 0, 
+    duration: 0.6, 
+    delay: 0.15, 
+    ease: "power3.out" 
+  });
+
+  gsap.from(".aperture-hero-title", { 
+    scale: 0.9, 
+    opacity: 0, 
+    duration: 0.85, 
+    delay: 0.25, 
+    ease: "back.out(1.4)" 
+  });
+
+  gsap.from(".aperture-hero-desc", { 
+    y: 20, 
+    opacity: 0, 
+    duration: 0.6, 
+    delay: 0.4, 
+    ease: "power3.out" 
+  });
+
+  gsap.from(".aperture-scroll-action", { 
+    opacity: 0, 
+    duration: 0.6, 
+    delay: 0.55, 
+    ease: "power2.out" 
   });
 }

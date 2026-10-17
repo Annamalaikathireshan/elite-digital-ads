@@ -182,15 +182,17 @@ function initAgencyHeroPinAnimation() {
 
   // Set initial 3D transforms
   gsap.set(showcaseFrame, {
-    scale: 0.88,
-    opacity: 0.18,
-    y: 35,
+    scale: 0.86,
+    opacity: 0,
+    y: 45,
+    pointerEvents: "none",
     transformPerspective: 1000
   });
 
   gsap.set(aperturePortal, {
     scale: 1,
-    opacity: 1
+    opacity: 1,
+    pointerEvents: "auto"
   });
 
   // Calculate dynamic scale needed to punch cleanly out of viewport
@@ -205,21 +207,28 @@ function initAgencyHeroPinAnimation() {
       scrub: 0.75,
       pin: true,
       anticipatePin: 1,
-      invalidateOnRefresh: true
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        if (self.progress > 0.4) {
+          showcaseFrame.style.pointerEvents = "auto";
+        } else {
+          showcaseFrame.style.pointerEvents = "none";
+        }
+      }
     }
   });
 
   tl.to(aperturePortal, {
     scale: zoomScale,
     opacity: 0,
-    duration: 1.4,
+    duration: 1.3,
     ease: "power2.inOut"
   }, 0)
   .to(showcaseFrame, {
     scale: 1,
     opacity: 1,
     y: 0,
-    duration: 1.4,
+    duration: 1.3,
     ease: "power2.out"
   }, 0.12);
 
